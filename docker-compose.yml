@@ -1,9 +1,12 @@
 version: '3'
 services:
-  #Run Container
-   swaydevstan:
-     image: nginx:alpine
-     container_name: my-webpage
-     restart: unless-stopped
-     ports:
-       - "80:80"
+  #Build and Run Container
+   webpage:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: my-webpage:latest
+    container_name: my-webpage
+    restart: unless-stopped
+    ports:
+      - "80:80"
