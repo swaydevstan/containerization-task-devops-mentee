@@ -7,7 +7,7 @@ on:
 env:
   CONTAINER_REGISTRY: docker.io
   IMAGE_NAME: "dev-accel-task"
-  VERSION: "$(date +%s).git.$GIT_REVISION"
+  VERSION: $(date +%s)
 
 jobs:
 
