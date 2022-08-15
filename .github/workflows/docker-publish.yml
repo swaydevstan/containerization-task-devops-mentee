@@ -5,8 +5,11 @@ on:
     branches: [ "main" ]
 
 env:
-  CONTAINER_REGISTRY: docker.io
+  REGISTRY: docker.io
   REPO: ${{ secrets.DOCKER_USERNAME }}/${{ github.repository }}
+
+permissions:
+  contents: read
 
 jobs:
 
@@ -38,9 +41,20 @@ jobs:
     - name: Build the Docker image
       run: docker build --file Dockerfile --tag ${{ env.REPO }}:${{ steps.versioning.outputs.version }} .
 
-    - name: Scan the Docker images
-      run: docker scan --file Dockerfile ${{ env.REPO }}:${{ steps.versioning.outputs.version }}
-    
+    - name: Run Trivy vulnerability scanner to scan image
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '${{ env.REPO }}:${{ steps.versioning.outputs.version }}'
+        format: 'template'
+        template: '@/contrib/sarif.tpl'
+        output: 'trivy-results.sarif'
+        severity: 'CRITICAL,HIGH'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+  
     - name: Push Image to the registry.
       run: docker push ${{ env.REPO }}:${{ steps.versioning.outputs.version }} .
 
