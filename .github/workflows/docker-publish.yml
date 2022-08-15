@@ -10,6 +10,7 @@ env:
 
 permissions:
   contents: read
+  security-events: write
 
 jobs:
 
@@ -45,15 +46,14 @@ jobs:
       uses: aquasecurity/trivy-action@master
       with:
         image-ref: '${{ env.REPO }}:${{ steps.versioning.outputs.version }}'
-        format: 'template'
-        template: '@/contrib/sarif.tpl'
-        output: 'trivy-results.sarif'
+        format: 'sarif'
+        output: 'image-scan-results.sarif'
         severity: 'CRITICAL,HIGH'
 
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v2
       with:
-        sarif_file: 'trivy-results.sarif'
+        sarif_file: 'image-scan-results.sarif'
   
     - name: Push Image to the registry.
       run: docker push ${{ env.REPO }}:${{ steps.versioning.outputs.version }} .
