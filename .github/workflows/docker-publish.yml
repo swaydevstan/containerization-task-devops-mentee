@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  REPO: ${{ secrets.DOCKER_USERNAME }}/${{ github.repository }}
+  REPO: swaydevstan/${{ github.repository }}
 
 permissions:
   contents: read
@@ -29,7 +29,7 @@ jobs:
         branch: main
         tag_prefix: "v"
         major_pattern: "MAJOR CHANGE:"
-        minor_pattern: "feat:"
+        minor_pattern: "FEAT:"
         format: "v${major}.${minor}.${patch}-${increment}"
 
     - name: Log in to DockerHub    
