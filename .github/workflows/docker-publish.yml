@@ -6,8 +6,7 @@ on:
 
 env:
   CONTAINER_REGISTRY: docker.io
-  IMAGE_NAME: "dev-accel-task"
-  VERSION: $(date +%s)
+  REPO: ${{ secrets.DOCKER_USERNAME }}/${{ github.repository }}
 
 jobs:
 
@@ -17,23 +16,35 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-    
-    - name: Scan the Docker image
-      uses: Azure/container-scan@v0
       with:
-        image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          fetch-depth: 0
 
-    - name: Log into registry    
-      uses: docker/login-action@v1
+    - name: Semantic versioning for Images
+      id: versioning
+      uses: PaulHatch/semantic-version@v4.0.2
       with:
-        registry: ${{ env.CONTAINER_REGISTRY }}              
+        branch: main
+        tag_prefix: "v"
+        major_pattern: "MAJOR CHANGE:"
+        minor_pattern: "feat:"
+        format: "v${major}.${minor}.${patch}-${increment}"
+
+    - name: Log in to DockerHub    
+      uses: docker/login-action@v2
+      with:            
         username: ${{ secrets.DOCKER_USERNAME }}  
         password: ${{ secrets.DOCKER_PASSWORD }}
 
+    - name: Build the Docker image
+      run: docker build --file Dockerfile --tag ${{ env.REPO }}:${{ steps.versioning.outputs.version }} .
+
+    - name: Scan the Docker images
+      uses: Azure/container-scan@v0
+      with:
+        image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.REPO }}:${{ steps.versioning.outputs.version }}
+    
+  
     - name: Push Image to the registry.
-      run: docker push ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+      run: docker push ${{ env.REPO }}:${{ steps.versioning.outputs.version }} .
 
 
