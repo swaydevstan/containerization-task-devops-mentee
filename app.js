@@ -45,7 +45,7 @@ app.put("/api/:id", (request, response)=> {
         return item.id === Number(selectedItemId)
     });
     if(selectedItem == undefined){
-        response.status(404).send("oops! we couldn't find that data!");
+        response.status(404).send("Oops! we couldn't find that data!");
     }
     for(p in updatedDataProperties){
         selectedItem[p] = updatedDataProperties[p]

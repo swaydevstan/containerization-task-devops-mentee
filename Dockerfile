@@ -1,5 +1,13 @@
-FROM nginx:mainline-alpine
+FROM node:current-alpine3.16
 
-COPY index.html /usr/share/nginx/html
+WORKDIR /my-node-api
 
-EXPOSE 80
+COPY package*.json /my-node-api/
+
+RUN npm install
+
+COPY . /my-node-api
+
+EXPOSE 4000
+
+CMD [ "npm", "start" ]
