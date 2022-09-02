@@ -1,8 +1,8 @@
 name: Build Scan and Push Docker Image
 
 on:
-  # push:
-  #   branches: [ "week-4" ]
+  push:
+    branches: [ "week-4" ]
   
   workflow_dispatch:
 

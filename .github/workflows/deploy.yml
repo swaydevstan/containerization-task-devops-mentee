@@ -1,8 +1,8 @@
 name: Deploy Application to Running Environment
 
 on:
-  # push:
-  #   branches: [ "week-4" ]
+  push:
+    branches: [ "week-4" ]
   
   workflow_dispatch:
 
