@@ -1,10 +1,11 @@
-name: Build Scan and Push Docker Image
+name: Deploy Application to Running Environment
 
 on:
   # push:
   #   branches: [ "week-4" ]
   
   workflow_dispatch:
+
 
 env:
   REPO: ${{ github.repository }}
