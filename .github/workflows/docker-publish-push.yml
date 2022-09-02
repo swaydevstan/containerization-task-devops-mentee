@@ -32,7 +32,7 @@ jobs:
         tag_prefix: "v"
         major_pattern: "MAJOR CHANGE:"
         minor_pattern: "feat:"
-        bump_each_commit: true
+        bump_each_commit: false
         version_format: ${major}.${minor}.${patch}
         # format: "v${major}.${minor}.${patch}-${increment}"
 
