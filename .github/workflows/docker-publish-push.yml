@@ -28,7 +28,7 @@ jobs:
       id: versioning
       uses: PaulHatch/semantic-version@v4.0.2
       with:
-        branch: main
+        branch: week-4
         tag_prefix: "v"
         major_pattern: "MAJOR CHANGE:"
         minor_pattern: "feat:"
@@ -46,17 +46,33 @@ jobs:
         head: HEAD
         extra_args: --json
 
-    - name: Run Static Code Analysis
-      uses: codacy/codacy-analysis-cli-action@master
-      with:
-          output: static-analysis-results.sarif
-          format: sarif
+    # - name: Run Static Code Analysis
+    #   uses: codacy/codacy-analysis-cli-action@master
+    #   with:
+    #       output: static-analysis-results.sarif
+    #       format: sarif
   
-    - name: Upload Static Code Analysis results
-      if: always()
-      uses: github/codeql-action/upload-sarif@main
+    # - name: Upload Static Code Analysis results
+    #   if: always()
+    #   uses: github/codeql-action/upload-sarif@main
+    #   with:
+    #     sarif_file: static-analysis-results.sarif
+
+    # Installs secret scanner on the runner
+    - name: Install Whispers
+      run: sudo pip install whispers
+
+    # Scan repo for secrets
+    - name: Run scanner for the repository
+      run: whispers ${{ github.workspace }} > /tmp/scan_output.json
+
+    # Upload Artifacts
+    - name: Upload the scan output
+      uses: actions/upload-artifact@v2
       with:
-        sarif_file: static-analysis-results.sarif
+        name: scan_results
+        path: /tmp/scan_output.json
+        retention-days: 2
 
     - name: Run Unit Tests
       run: echo "Application tests successful"
