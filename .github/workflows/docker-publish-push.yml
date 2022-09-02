@@ -40,16 +40,16 @@ jobs:
       id: branch-name
       uses: tj-actions/branch-names@v6
 
-    # - name: Scan for Secrets and Credentials Leak
-    #   uses: gitleaks/gitleaks-action@v2
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   # uses: trufflesecurity/trufflehog@v3.10.1
-    #   # with:
-    #   #   path: ./ 
-    #   #   base: ${{ steps.branch-name.outputs.current_branch }}
-    #   #   head: HEAD
-    #   #   extra_args: --json
+    - name: Scan for Secrets and Credentials Leak
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # uses: trufflesecurity/trufflehog@v3.10.1
+      # with:
+      #   path: ./ 
+      #   base: ${{ steps.branch-name.outputs.current_branch }}
+      #   head: HEAD
+      #   extra_args: --json
 
     # - name: Run Static Code Analysis
     #   uses: codacy/codacy-analysis-cli-action@master
