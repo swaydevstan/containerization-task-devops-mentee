@@ -1,0 +1,23 @@
+{
+  "name": "simple-node-express-api",
+  "version": "1.0.0",
+  "description": "A Simple Node.js express api",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swaydevstan/containerizing-a-simple-web-app.git"
+  },
+  "author": "Stanley Godspower",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/swaydevstan/containerizing-a-simple-web-app/issues"
+  },
+  "homepage": "https://github.com/swaydevstan/containerizing-a-simple-web-app#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
