@@ -39,27 +39,27 @@ jobs:
       uses: tj-actions/branch-names@v6
 
     - name: Scan for Secrets and Credentials Leak
-      uses: trufflesecurity/trufflehog@v3.10.1
-      with:
-        path: ./ 
-        base: ${{ steps.branch-name.outputs.current_branch }}
-        head: HEAD
-        extra_args: --json
-
-    - name: Run Static Code Analysis
-    - uses: gitleaks/gitleaks-action@v2
+      uses: gitleaks/gitleaks-action@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   uses: codacy/codacy-analysis-cli-action@master
-    #   with:
-    #       output: static-analysis-results.sarif
-    #       format: sarif
+      # uses: trufflesecurity/trufflehog@v3.10.1
+      # with:
+      #   path: ./ 
+      #   base: ${{ steps.branch-name.outputs.current_branch }}
+      #   head: HEAD
+      #   extra_args: --json
+
+    - name: Run Static Code Analysis
+      uses: codacy/codacy-analysis-cli-action@master
+      with:
+          output: static-analysis-results.sarif
+          format: sarif
   
-    # - name: Upload Static Code Analysis results
-    #   if: always()
-    #   uses: github/codeql-action/upload-sarif@main
-    #   with:
-    #     sarif_file: static-analysis-results.sarif
+    - name: Upload Static Code Analysis results
+      if: always()
+      uses: github/codeql-action/upload-sarif@main
+      with:
+        sarif_file: static-analysis-results.sarif
 
     # # Installs secret scanner on the runner
     # - name: Install Whispers
