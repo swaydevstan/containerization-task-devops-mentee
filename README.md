@@ -5,7 +5,7 @@ This repository contains solutions to task assigned at [DevOps Accelerate Week 3
 
 Semantic versioning and image scanning using Trivy has been implemented.
 
-### How to run the app. 
-Using docker-compose: ` docker compose up `
+### How to run the app locally
+Using docker-compose: ` docker-compose up -d `
 
 
