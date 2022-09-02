@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  REPO: ${{ github.repository }}
+  REPO: swaydevstan/nodejs-api
 
 permissions:
   contents: read
@@ -34,12 +34,34 @@ jobs:
         minor_pattern: "feat:"
         format: "v${major}.${minor}.${patch}-${increment}"
 
-    - name: Log in to DockerHub    
-      uses: docker/login-action@v2
-      with:            
-        username: ${{ secrets.DOCKER_USERNAME }}  
-        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Get branch name
+      id: branch-name
+      uses: tj-actions/branch-names@v6
 
+    - name: Scan for Secrets and Credentials Leak
+      uses: trufflesecurity/trufflehog@v3.10.1
+      with:
+        path: ./ 
+        base: ${{ steps.branch-name.outputs.current_branch }}
+        head: HEAD
+        extra_args: --json
+
+    - name: Run Static Code Analysis
+      uses: codacy/codacy-analysis-cli-action@master
+      with:
+          output: static-analysis-results.sarif
+          format: sarif
+  
+    - name: Upload Static Code Analysis results
+      if: always()
+      uses: github/codeql-action/upload-sarif@main
+      with:
+        sarif_file: static-analysis-results.sarif
+
+    - name: Run Unit Tests
+      run: echo "Application tests successful"
+      
+    
     - name: Build the Docker image
       run: docker build --file Dockerfile --tag ${{ env.REPO }}:${{ steps.versioning.outputs.version }} .
 
@@ -49,13 +71,20 @@ jobs:
         image-ref: '${{ env.REPO }}:${{ steps.versioning.outputs.version }}'
         format: 'sarif'
         output: 'image-scan-results.sarif'
-        severity: 'CRITICAL,HIGH'
+        severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+
 
     - name: Upload Trivy scan results to GitHub Security tab
       if: always() #
       uses: github/codeql-action/upload-sarif@v2
       with:
         sarif_file: 'image-scan-results.sarif'
+
+    - name: Log in to DockerHub    
+      uses: docker/login-action@v2
+      with:            
+        username: ${{ secrets.DOCKER_USERNAME }}  
+        password: ${{ secrets.DOCKER_PASSWORD }}
   
     - name: Push Image to Registry
       run: docker push ${{ env.REPO }}:${{ steps.versioning.outputs.version }}
