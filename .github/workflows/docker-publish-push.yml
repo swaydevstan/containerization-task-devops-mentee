@@ -46,7 +46,10 @@ jobs:
         head: HEAD
         extra_args: --json
 
-    # - name: Run Static Code Analysis
+    - name: Run Static Code Analysis
+    - uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     #   uses: codacy/codacy-analysis-cli-action@master
     #   with:
     #       output: static-analysis-results.sarif
@@ -58,21 +61,21 @@ jobs:
     #   with:
     #     sarif_file: static-analysis-results.sarif
 
-    # Installs secret scanner on the runner
-    - name: Install Whispers
-      run: sudo pip install whispers
+    # # Installs secret scanner on the runner
+    # - name: Install Whispers
+    #   run: sudo pip install whispers
 
-    # Scan repo for secrets
-    - name: Run scanner for the repository
-      run: whispers ${{ github.workspace }} > /tmp/scan_output.json
+    # # Scan repo for secrets
+    # - name: Run scanner for the repository
+    #   run: whispers ${{ github.workspace }} > /tmp/scan_output.json
 
-    # Upload Artifacts
-    - name: Upload the scan output
-      uses: actions/upload-artifact@v2
-      with:
-        name: scan_results
-        path: /tmp/scan_output.json
-        retention-days: 2
+    # # Upload Artifacts
+    # - name: Upload the scan output
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: scan_results
+    #     path: /tmp/scan_output.json
+    #     retention-days: 2
 
     - name: Run Unit Tests
       run: echo "Application tests successful"
