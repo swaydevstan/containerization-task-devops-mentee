@@ -15,7 +15,7 @@ permissions:
 
 jobs:
 
-  build:
+  docker_build_and_push:
 
     runs-on: ubuntu-latest
 
@@ -32,8 +32,9 @@ jobs:
         tag_prefix: "v"
         major_pattern: "MAJOR CHANGE:"
         minor_pattern: "feat:"
-        patch_pattern: "fix"
-        format: "v${major}.${minor}.${patch}-${increment}"
+        bump_each_commit: true
+        version_format: ${major}.${minor}.${patch}
+        # format: "v${major}.${minor}.${patch}-${increment}"
 
     - name: Get branch name
       id: branch-name
