@@ -54,7 +54,7 @@ jobs:
     - name: Run Static Code Analysis
       uses: github/codeql-action/init@v2
       with:
-          languages: go, javascript, csharp, python, cpp, java
+          languages: javascript
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
