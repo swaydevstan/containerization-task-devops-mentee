@@ -30,9 +30,9 @@ jobs:
       with:
         branch: week-4
         tag_prefix: "v"
-        major_pattern: "MAJOR CHANGE:"
+        major_pattern: "Major:"
         minor_pattern: "feat:"
-        bump_each_commit: false
+        bump_each_commit: true
         version_format: ${major}.${minor}.${patch}
         # format: "v${major}.${minor}.${patch}-${increment}"
 
@@ -44,12 +44,6 @@ jobs:
       uses: gitleaks/gitleaks-action@v2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # uses: trufflesecurity/trufflehog@v3.10.1
-      # with:
-      #   path: ./ 
-      #   base: ${{ steps.branch-name.outputs.current_branch }}
-      #   head: HEAD
-      #   extra_args: --json
 
     - name: Run Static Code Analysis
       uses: github/codeql-action/init@v2
