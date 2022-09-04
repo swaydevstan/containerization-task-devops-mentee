@@ -1,5 +1,5 @@
 const express = require('express');
-
+const bodyParser = require('body-parser');
 const app = express();
 
 app.set("port", process.env.PORT || 4000);
@@ -9,43 +9,45 @@ app.set("port", process.env.PORT || 4000);
 app.use(express.json());       
 app.use(express.urlencoded({extended:true}));
 
+const router = express.Router();
+
 let myData = [
-    {id:1, color:"red", x:50, y: 200},
-    {id:2, color:"orange", x:100, y: 200},
-    {id:3, color:"yellow", x:150, y: 200},
-    {id:4, color:"green", x:200, y: 200},
-    {id:5, color:"blue", x:250, y: 200},
-    {id:6, color:"purple", x:300, y: 200}
+    {id:1, name:"Stanley", email:"stan@example.com", age:45},
+    {id:2, name:"Dave", email:"dave@example.com", age:88},
+    {id:3, name:"Frank", email:"frank@example.com", age:65},
+    {id:4, name:"Chidi", email:"chidi@example.com", age:79},
+    {id:5, name:"Stephanie", email:"steph@example.com", age:24},
+    {id:6, name:"Tamar", email:"tam@example.com", age:27}
 ];
 
-app.get("/", (request, response) => {
-    response.send("Hello There!! 👋👋, API is running 💨💨");
+router.get("/", (req, res) => {
+    res.send("Hello There!! 👋👋, API is running 💨💨");
 });
 
 // our 'API'
 // GET - /api
-app.get("/api", (request, response) => {
-    response.json(myData);
+router.get("/api", (req, res) => {
+    res.json(myData);
 });
 
 // POST - /api
-app.post("/api", (request, response) => {
+router.post("/api", (req, res) => {
     let randomId = Math.floor(Math.random()*100);
-    const newData = Object.assign({id: randomId}, request.body);
+    const newData = Object.assign({id: randomId}, req.body);
     myData.push(newData);
-    response.json(myData)
+    res.json(myData)
 });
 
 
 // PUT - /api
-app.put("/api/:id", (request, response)=> {
-    const selectedItemId = request.params.id;
-    const updatedDataProperties = request.body
+router.put("/api/:id", (req, res)=> {
+    const selectedItemId = req.params.id;
+    const updatedDataProperties = req.body
     let selectedItem = myData.find(item => {
         return item.id === Number(selectedItemId)
     });
     if(selectedItem == undefined){
-        response.status(404).send("Oops! we couldn't find that data!");
+        res.status(404).send("Oops! we couldn't find that data!");
     }
     for(p in updatedDataProperties){
         selectedItem[p] = updatedDataProperties[p]
@@ -58,22 +60,27 @@ app.put("/api/:id", (request, response)=> {
         }
     });
 
-    response.json(myData)
+    res.json(myData)
 });
 
 // DELETE - /api
-app.delete('/api/:id', (request, response) => {
-    const selectedItemId = request.params.id;
+router.delete('/api/:id', (req, res) => {
+    const selectedItemId = req.params.id;
     const newData = myData.filter(item => {
         return item.id !== Number(selectedItemId)
     })
     myData = newData;
 
-    response.json(myData);
+    res.json(myData);
 })
+
+
+app.use('/',router);
 
 //Configure PORT to listen on
 var server = app.listen(app.get("port"), () => {
     var port = server.address().port
     console.log("Node.js API app running at http://localhost:%s", port)
 })
+
+module.exports = server

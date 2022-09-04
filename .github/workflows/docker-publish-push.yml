@@ -67,7 +67,7 @@ jobs:
     #     sarif_file: static-analysis-results.sarif
 
     - name: Run Unit Tests
-      run: echo "Application tests successful"
+      run: npm run test
       
     
     - name: Build the Docker image
