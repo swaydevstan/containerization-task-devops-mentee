@@ -67,7 +67,9 @@ jobs:
     #     sarif_file: static-analysis-results.sarif
 
     - name: Run Unit Tests
-      run: npm run test
+      run: |
+            npm i
+            npm run test
       
     
     - name: Build the Docker image
