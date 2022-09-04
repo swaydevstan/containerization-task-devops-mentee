@@ -3,7 +3,6 @@ const chaiHttp = require('chai-http');
 const { expect } = chai;
 const app = require("./app");
 const request = require("supertest");
-// This agent refers to PORT where program is runninng.
 
 chai.use(chaiHttp);
 chai.use(require('chai-like'));
@@ -54,7 +53,8 @@ describe("API Tests:", () => {
         const body = res.body;
         expect(res.status).equal(200);
         expect(body).to.be.an("array").that.contains.something.like({id: 27});
-        done();
+        expect(body).to.be.an("array").that.contains.something.like({name: "admin"});
+       done();
         });
     })
   
